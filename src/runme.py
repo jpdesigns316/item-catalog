@@ -20,7 +20,7 @@ class InstallationMenu(object):
                              "Set Client ID",
                              "Install modules",
                              "Run Server",
-                             "Quit",
+                             "Quit"]
         self.old_client_id = "844476090512-hq31f24hb62jg757e22im6hnjp513k37"
         self.menu()
 

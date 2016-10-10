@@ -22,9 +22,10 @@
 # This will only list the books for the chosen language_id
 
 from flask import Blueprint, Flask, render_template, request, redirect, \
-                  url_for, jsonify, wraps
+                  url_for, jsonify
 
 # Database model
+from functools import wraps
 from sqlalchemy import desc
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -42,14 +43,7 @@ session = DBSession()
 
 books_blueprint = Blueprint('books', __name__)
 
-# Owner Authorization code
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, *kwargs):
-        if 'username' not in login_session:
-            return redirect('/books')
-        return f(*args *kwargs)
-    return decorated_function
+
 
 
 # Following functions contain querys that are used at multiple instances
@@ -107,7 +101,6 @@ def index():
                             STATE=state)
 
 @books_blueprint.route('/add/book', methods=['GET', 'POST'])
-@login_required
 def add_book():
     if request.method == 'POST':
         books = session.query(Books).all()
@@ -130,7 +123,7 @@ def add_book():
 @books_blueprint.route('/delete/<int:book_id>', methods=['GET', 'POST'])
 def delete_book(book_id):
     if get_book(book_id) != login_session['user_id']:
-        return user_error()44
+        return user_error()
     if request.method == 'POST':
             session.delete(get_book(book_id))
             session.commit()
