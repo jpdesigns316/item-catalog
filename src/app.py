@@ -46,8 +46,7 @@ app = Flask(__name__)
 app.config.from_object('config')
 app.secret_key = app.config['SECRET_KEY']
 
-
-engine = create_engine('sqlite:///books.db')
+engine = create_engine('postgresql://catalog:Bradycheated@localhost/catalog')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
@@ -212,3 +211,6 @@ def get_user_id(email):
 # for more information.
 from views.books import books_blueprint
 app.register_blueprint(books_blueprint, url_prefix='/books')
+
+if __name__ == "__main__":
+    app.run()

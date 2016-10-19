@@ -108,7 +108,7 @@ class Books(Base):
 
 
 
-engine = create_engine('sqlite:///books.db')
+engine = create_engine('postgresql://catalog:Bradycheated@localhost/catalog')
 
 
 Base.metadata.create_all(engine)
