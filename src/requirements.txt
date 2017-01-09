@@ -5,3 +5,4 @@ werkzeug==0.11.10
 Flask-Login==0.3.2
 oauth2client==3.0.0
 requests==2.11.1
+psycopg2==2.6.2

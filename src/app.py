@@ -47,7 +47,7 @@ app.config.from_object('config')
 app.secret_key = app.config['SECRET_KEY']
 
 
-engine = create_engine('sqlite:///books.db')
+engine = create_engine('postgresql://catalog:catalog123@localhost/catalog')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
@@ -176,7 +176,7 @@ def gdisconnect():
     else:
         # response = make_response(json.dumps("Failed to logout"), 400)
         # response.headers['Content-Type'] = 'application/json'
-        return render_template("logout_error.html")
+        return render_template("logout_error.jinja2")
 
 # This function will create a new user in the database. Based upon the
 # information from the login_session is will store it. This is done
@@ -194,8 +194,11 @@ def create_user(login_session):
 # Funtion that will retrieve information form the User model based upon the
 # user_id and return information about the user.
 def get_user_info(user_id):
-    user = session.query(User).filter_by(id=user_id).one()
-    return user
+    try:
+        user = session.query(User).filter_by(id=user_id).one()
+        return user
+    except:
+        return None
 
 # This function will retrieve infromation abouthe used based on the
 # email given. If there is no record in the database then it will return

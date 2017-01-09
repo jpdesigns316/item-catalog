@@ -35,7 +35,7 @@ from app import get_user_id, get_user_info
 import random
 import string
 
-engine = create_engine('sqlite:///books.db')
+engine = create_engine('postgresql://catalog:catalog123@localhost/catalog')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
@@ -164,7 +164,7 @@ def edit_book(book_id):
 
 @books_blueprint.route('/language/<int:language_id>')
 def get_language_page(language_id):
-    if 'username' not in session:
+    if 'username' not in login_session:
         render_template('books.jinja2',
                         books=get_book_language(language_id),
                         languages=get_languages())

@@ -7,7 +7,7 @@ import json
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 ADMIN = frozenset(["admin"])
-IP_ADDRESS = '127.0.0.1'
+IP_ADDRESS = '0.0.0.0'
 PORT=5000
 SECRET_KEY = 'rF&UM39t6Rn2S6422776H9e3!*5D62*K'
 

@@ -15,9 +15,9 @@ class User(Base):
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
-    email = Column(String(250), nullable=False)
-    picture = Column(String(250))
+    name = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+    picture = Column(String)
 
     def __init__(self, name, email, picture):
         self.name = name
@@ -28,7 +28,7 @@ class Language(Base):
     __tablename__ = 'language'
 
     id = Column(Integer, primary_key=True)
-    language = Column(String(250), nullable=False)
+    language = Column(String, nullable=False)
 
     @property
     def serialize(self):
@@ -49,7 +49,7 @@ class Language(Base):
 #     book_id = Column(String, ForeignKey('books.id'))
 #     book = relationship("Book", foreign_keys=['book_id'])
 #     price = Column(String(8))
-#     url = Column(String(250))
+#     url = Column(String)
 #
 #     @property
 #     def serialize(self):
@@ -66,11 +66,11 @@ class Books(Base):
 
 
     id = Column(Integer, primary_key=True)
-    book_img = Column(String(250))
+    book_img = Column(String)
     book_title = Column(String(80))
     book_author = Column(String(80))
-    book_description = Column(String(250))
-    book_url = Column(String(250))
+    book_description = Column(String)
+    book_url = Column(String)
     # book_price_id = Column(Integer, ForeignKey('book_price.id'))
     language_id = Column(Integer, ForeignKey('language.id'))
     user_id = Column(Integer, ForeignKey('user.id'))
@@ -108,7 +108,7 @@ class Books(Base):
 
 
 
-engine = create_engine('sqlite:///books.db')
+engine = create_engine('postgresql://catalog:catalog123@localhost/catalog')
 
 
 Base.metadata.create_all(engine)
