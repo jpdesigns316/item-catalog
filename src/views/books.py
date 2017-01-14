@@ -67,6 +67,7 @@ def get_languages():
 def get_current_user():
     return get_user_info(get_user_id(login_session['email']))
 
+
 # Query function that returns information about the book_id given.
 def get_book(book_id):
     return session.query(Books).filter_by(id=book_id).one()
@@ -164,10 +165,11 @@ def edit_book(book_id):
 
 @books_blueprint.route('/language/<int:language_id>')
 def get_language_page(language_id):
-    if 'username' not in login_session:
+    if 'username' in login_session:
         render_template('books.jinja2',
                         books=get_book_language(language_id),
-                        languages=get_languages())
+                        languages=get_languages(),
+                        user=get_current_user())
     return render_template('books.jinja2',
                     books=get_book_language(language_id),
                     languages=get_languages(),
