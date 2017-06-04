@@ -24,6 +24,7 @@ class User(Base):
         self.email = email
         self.picture = picture
 
+
 class Language(Base):
     __tablename__ = 'language'
 
@@ -36,7 +37,6 @@ class Language(Base):
             'id': self.id,
             'language': self.name
         }
-
 
     def __init__(self, language=None):
         self.language = language
@@ -64,7 +64,6 @@ class Language(Base):
 class Books(Base):
     __tablename__ = 'books'
 
-
     id = Column(Integer, primary_key=True)
     book_img = Column(String)
     book_title = Column(String(80))
@@ -77,7 +76,6 @@ class Books(Base):
     language = relationship(Language)
     # book_price = relationship(BookPrice)
     user = relationship(User)
-
 
     @property
     def serialize(self):
@@ -92,23 +90,19 @@ class Books(Base):
             'user_id': self.user_id
         }
 
-
     def __init__(self, book_img=None, book_title=None, book_author=None,
                  book_description=None, book_url=None, language_id=None,
                  user_id=None):
-         self.book_img = book_img
-         self.book_title = book_title
-         self.book_author = book_author
-         self.book_description = book_description
-         self.book_url = book_url
-         self.language_id = language_id
-         self.user_id = user_id
+        self.book_img = book_img
+        self.book_title = book_title
+        self.book_author = book_author
+        self.book_description = book_description
+        self.book_url = book_url
+        self.language_id = language_id
+        self.user_id = user_id
 
 
-
-
-
-engine = create_engine('postgresql://catalog:catalog123@localhost/catalog')
+engine = create_engine('sqlite:///books.db')
 
 
 Base.metadata.create_all(engine)
