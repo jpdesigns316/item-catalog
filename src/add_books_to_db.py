@@ -1,7 +1,7 @@
-from Flask import flask
+from flask import Flask
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from controllers import session
+from controllers import connect_to_db
 from database_setup import Books, Base, Language, User
 
 

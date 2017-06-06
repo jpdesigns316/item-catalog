@@ -11,7 +11,8 @@ PORT = 5432
 SQLUSER = ''
 SQLPASSWORD = ''
 FILENAME = 'books'
-
+CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
+    'web']['client_id']
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 IP_ADDRESS = '0.0.0.0'

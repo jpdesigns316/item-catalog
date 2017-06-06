@@ -37,12 +37,10 @@ def index():
         return render_template('books.jinja2',
                                books=c.get_books(),
                                languages=c.get_languages(),
-                               user='Guest')
+                               user=c.get_current_user())
     # This creates a random string of information that will be used in the
     # thrid-party authentication.
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
-                    for x in xrange(32))
-    login_session['state'] = state
+    state = c.make_state()
     return render_template('books.jinja2',
                            books=c.get_books(),
                            languages=c.get_languages(),
@@ -66,11 +64,11 @@ def add_book():
         return redirect(url_for('books.index'))
     else:
         return render_template('add_book.jinja2',
-                               languages=get_languages(),
-                               user=get_current_user())
+                               languages=c.get_languages(),
+                               user=c.get_current_user())
 
 
-@books_blueprint.route('/delete/<int:book_id>', methods=['GET', 'POST'])
+@books_blueprint.route('/delete/<int:book_id>', methods=['GET', 'POST', 'DELETE'])
 def delete_book(book_id):
     if get_book(book_id) != login_session['user_id']:
         return user_error()
@@ -80,9 +78,9 @@ def delete_book(book_id):
         return redirect(url_for('books.index', books=get_books()))
     else:
         return render_template('delete_book.jinja2',
-                               books=get_book(book_id),
-                               languages=get_languages(),
-                               user=get_current_user())
+                               books=c.get_book(book_id),
+                               languages=c.get_languages(),
+                               user=c.get_current_user())
 
 
 @books_blueprint.route('/edit/<int:book_id>', methods=['GET', 'POST'])
@@ -117,23 +115,24 @@ def edit_book(book_id):
 def get_language_page(language_id):
     if 'username' in login_session:
         return render_template('books.jinja2',
-                               books=v.get_book_language(language_id - 1),
-                               languages=v.get_languages(),
+                               books=c.get_book_language(language_id),
+                               languages=c.get_languages(),
                                user=c.get_current_user())
     return render_template('books.jinja2',
-                           books=c.get_book_language(language_id - 1),
+                           books=c.get_book_language(language_id),
                            languages=c.get_languages(),
-                           user='Guest')
+                           user='Guest',
+                           STATE=c.make_state())
 
 
 # JSON API's to display infromation about the books
 @books_blueprint.route('/JSON')
 def books_json():
-    books = get_books()
+    books = c.get_books()
     return jsonify(books=[book.serialize for book in books])
 
 
 @books_blueprint.route('/<int:book_id>/JSON')
 def book_json(book_id):
-    book = get_book(book_id)
+    book = c.get_book(book_id)
     return jsonify(books=book.serialize)

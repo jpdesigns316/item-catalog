@@ -1,7 +1,10 @@
 from flask import Flask
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from flask import session as login_session
 from database_setup import Base, Books, User, Language
+import random
+import string
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -18,6 +21,13 @@ def connect_to_db():
 
 
 session = connect_to_db()
+
+
+def make_state():
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                    for x in xrange(32))
+    login_session['state'] = state
+    return state
 
 
 def create_user(login_session):
