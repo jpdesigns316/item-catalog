@@ -1,5 +1,5 @@
 {% extends 'base.jinja2' %}
-
+{% import 'macros.html' as macros %}
 {% block content %}
 
     <script>
@@ -24,7 +24,43 @@
 
 
     </script>
-    <h2>Add a book</h2>
+
+    <div class="col-md-8 panel panel-default">
+      <legend>Add Book</legend>
+      {% call macros.render_form(form, action_url=url_for('books.add_book'), action_text="Add Book", class_="form-horizontal") %}
+      <div class="col-md-12">
+        {{ form.hidden_tag() }}
+
+        {{ macros.input(form.book_title, type='text', div_width="col-md-12") }}
+        {{ macros.input(form.book_author, type='text', div_width="col-md-12") }}
+        {{ macros.render_textarea(form.book_description, div_width="col-md-12") }}
+        {{ macros.select_start(form.language_id,  class="form-control", div_width="col-md-12", id="select-language") }}
+        {% for language in languages %}
+                                <script>
+                                    if(count==0)
+                                    {
+                                        $("#select-language").append('<option value="' + count + '" selected>{{language.language}}</option>');
+                                    }
+                                    else
+                                    {
+                                        $("#select-language").append('<option value="' + count + '">{{language.language}}</option>');
+                                    }
+                                    count++;
+                                </script>
+                                {% endfor %}
+        {{ macros.select_end() }}
+        {{ macros.input(form.book_img, type='file', div_width="col-md-12") }}
+        {{ macros.render_field(form.user_id, label_visible=false) }}
+
+      <div class="col-md-12 text-center">
+      {% endcall %}
+      </div>
+    <!-- <div class="col-xs-12 col-md-6 col-md-offset-3 panel panel-default">
+      <legend>Add Applicaion</legend>
+      {% call macros.render_form(form, action_url=url_for('books.add_book'), action_text="Add Book", class_="form-horizontal") %}
+
+      {% endcall %}
+      </div>
     <form method="post" class="form-horizontal" action="#">
         <fieldset id="add_book_menu">
             <div class="flyout">
@@ -106,5 +142,5 @@
             $('.img-help').hide();
         });
 
-    </script>
+    </script> -->
 {% endblock %}

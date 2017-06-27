@@ -80,7 +80,10 @@ def get_languages():
 # currently used, this could be helpful for future modifation of information
 # that is displayed about the user
 def get_current_user():
-    return get_user_info(get_user_id(login_session['email']))
+    try:
+        return get_user_info(get_user_id(login_session['email']))
+    except:
+        return 'Guest'
 
 
 # Query function that returns information about the book_id given.

@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, make_response, redirect, url_for, flash
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, User, Books, Language
+from flask_wtf.csrf import CSRFProtect
 import controllers as c
 
 from flask import session as login_session
@@ -19,6 +19,7 @@ from views import books_blueprint
 
 
 app = Flask(__name__)
+
 app.config.from_object('config')
 app.secret_key = app.config['SECRET_KEY']
 app.register_blueprint(books_blueprint, url_prefix='/books')
@@ -148,9 +149,10 @@ def gconnect():
 
 @app.route('/gdisconnect')
 def gdisconnect():
-        # Only disconnect a connected user.
+    # Only disconnect a connected user.
     access_token = login_session.get('access_token')
     if access_token is None:
+        login_session.clear()
         response = make_response(json.dumps(
             'Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
@@ -169,6 +171,7 @@ def gdisconnect():
         return redirect(url_for('books.index'))
     else:
         # For whatever reason, the given token was invalid.
+        login_session.clear()
         response = make_response(
             json.dumps('Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'

@@ -3,20 +3,17 @@ from flask import Blueprint, Flask, render_template, request, redirect, \
 
 # Database model
 from functools import wraps
+from forms import BookForm
 from sqlalchemy import desc
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Books, User, Language
+import models
 from flask import session as login_session
 import controllers as c
 import random
 import string
 
-engine = create_engine('sqlite:///books.db')
-Base.metadata.bind = engine
-
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
+session = c.connect_to_db()
 
 books_blueprint = Blueprint('books', __name__)
 
@@ -35,22 +32,22 @@ def user_error():
 def index():
     if 'username' in login_session:
         return render_template('books.jinja2',
-                               books=c.get_books(),
-                               languages=c.get_languages(),
+                               books=models.Book.get_books(),
+                               languages=models.Language.get_languages(),
                                user=c.get_current_user())
     # This creates a random string of information that will be used in the
     # thrid-party authentication.
-    state = c.make_state()
     return render_template('books.jinja2',
-                           books=c.get_books(),
-                           languages=c.get_languages(),
-                           STATE=state)
+                           books=models.Book.get_books(),
+                           languages=models.Language.get_languages(),
+                           STATE=c.make_state())
 
 
 @books_blueprint.route('/add/book', methods=['GET', 'POST'])
 def add_book():
-    if request.method == 'POST':
-        books = session.query(Books).all()
+    form = BookForm()
+    if request.method == 'POST' and form.validate():
+        books = session.query(models.Books).all()
         # Creating a books object to add to the databse.
         book = Books(book_img=request.form['book_img'],
                      book_title=request.form['book_title'],
@@ -65,6 +62,7 @@ def add_book():
     else:
         return render_template('add_book.jinja2',
                                languages=c.get_languages(),
+                               form=form,
                                user=c.get_current_user())
 
 
@@ -87,8 +85,8 @@ def delete_book(book_id):
 def edit_book(book_id):
     if 'username' not in login_session:
         return redirect('/books')
-    editedBook = session.query(Books).filter_by(id=book_id).one()
-    user = get_current_user()
+    editedBook = session.query(models.Book).filter_by(id=book_id).one()
+    user = c.get_current_user()
 
     if editedBook.user_id != login_session['user_id']:
         return user_error()
